@@ -113,7 +113,7 @@ jobs:
 
       - task: GitHubRelease@0
         displayName: 'Release Package'
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/head/master'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           gitHubConnection: 'klcantrell'
           repositoryName: 'klcantrell/hello-reason-native'

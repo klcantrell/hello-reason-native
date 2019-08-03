@@ -16,9 +16,6 @@ steps:
     displayName: 'esy test'
   - script: esy x HelloReasonNativeApp.exe
     displayName: 'Run the main binary'
-  - script: esy ls-libs
-    continueOnError: true
-    displayName: 'Show all libraries including this package lib'
   - script: esy npm-release
     displayName: 'Test Creation of Prebuilt Binary Releases'
     continueOnError: true
