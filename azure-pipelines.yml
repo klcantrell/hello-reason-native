@@ -111,7 +111,7 @@ jobs:
           artifactName: 'windowsExe'
           downloadPath: '$(System.ArtifactsDirectory)'
 
-      - task: GitHubRelease@1
+      - task: GitHubRelease@0
         displayName: 'Release Package'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/head/master'))
         inputs:
