@@ -1,0 +1,1 @@
+let foo = () => print_endline("Hello " ++ Sys.os_type);
