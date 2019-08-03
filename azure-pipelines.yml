@@ -19,6 +19,10 @@ jobs:
       # - template: .ci/restore-build-cache.yml
       - template: .ci/esy-build-steps.yml
       # - template: .ci/publish-build-cache.yml
+      - script: 'npm pack'
+        displayName: 'npm pack'
+      - script: 'cp ./src/_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
+        displayName: 'copy tgz to "Artifacts Staging Directory"'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Linux executable'
         inputs:
@@ -39,6 +43,10 @@ jobs:
       # - template: .ci/restore-build-cache.yml
       - template: .ci/esy-build-steps.yml
       # - template: .ci/publish-build-cache.yml
+      - script: 'npm pack'
+        displayName: 'npm pack'
+      - script: 'cp ./src/_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
+        displayName: 'copy tgz to "Artifacts Staging Directory"'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish MacOS executable'
         inputs:
@@ -58,6 +66,10 @@ jobs:
       - template: .ci/restore-build-cache.yml
       - template: .ci/esy-build-steps.yml
       - template: .ci/publish-build-cache.yml
+      - powershell: 'npm pack'
+        displayName: 'npm pack'
+      - powershell: 'cp ./src/_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
+        displayName: 'copy tgz to "Artifacts Staging Directory"'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Windows executable'
         inputs:
@@ -75,7 +87,7 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - task: DownloadBuildArtifact@0
+      - task: DownloadBuildArtifacts@0
         displayName: 'Download Linux exectable'
         inputs:
           buildType: 'current'
@@ -83,15 +95,15 @@ jobs:
           artifactName: 'linuxExe'
           downloadPath: '$(System.ArtifactsDirectory)'
 
-      - task: DownloadBuildArtifact@0
+      - task: DownloadBuildArtifacts@0
         displayName: 'Download Mac exectable'
         inputs:
           buildType: 'current'
           downloadType: 'single'
           artifactName: 'macExe'
-          downloadPath: '$(0ystem.ArtifactsDirectory)'
+          downloadPath: '$(System.ArtifactsDirectory)'
 
-      - task: DownloadBuildArtifact@0
+      - task: DownloadBuildArtifacts@0
         displayName: 'Download Windows exectable'
         inputs:
           buildType: 'current'
