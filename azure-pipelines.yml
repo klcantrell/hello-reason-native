@@ -5,63 +5,109 @@
 
 name: $(Build.SourceVersion)
 jobs:
-- job: Linux
-  timeoutInMinutes: 0
-  pool:
-    vmImage: 'Ubuntu 16.04'
+  - job: Linux
+    timeoutInMinutes: 0
+    pool:
+      vmImage: 'Ubuntu 16.04'
 
-  variables:
-    ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i/
-    ESY__CACHE_SOURCE_TARBALL_PATH: /home/vsts/.esy/source/i
+    variables:
+      ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i/
+      ESY__CACHE_SOURCE_TARBALL_PATH: /home/vsts/.esy/source/i
 
-  steps:
-  # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Linux.
-  # - template: .ci/restore-build-cache.yml
-  - template: .ci/esy-build-steps.yml
-  # - template: .ci/publish-build-cache.yml
+    steps:
+      # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Linux.
+      # - template: .ci/restore-build-cache.yml
+      - template: .ci/esy-build-steps.yml
+      # - template: .ci/publish-build-cache.yml
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Linux executable'
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: linuxExe
 
-- job: MacOS
-  timeoutInMinutes: 0
-  pool:
-    vmImage: 'macOS 10.13'
+  - job: MacOS
+    timeoutInMinutes: 0
+    pool:
+      vmImage: 'macOS 10.13'
 
-  variables:
-    ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3____________________________________________________________________/i/
-    ESY__CACHE_SOURCE_TARBALL_PATH: /Users/vsts/.esy/source/i
+    variables:
+      ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3____________________________________________________________________/i/
+      ESY__CACHE_SOURCE_TARBALL_PATH: /Users/vsts/.esy/source/i
 
-  steps:
-  # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Mac.
-  # - template: .ci/restore-build-cache.yml
-  - template: .ci/esy-build-steps.yml
-  # - template: .ci/publish-build-cache.yml
+    steps:
+      # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Mac.
+      # - template: .ci/restore-build-cache.yml
+      - template: .ci/esy-build-steps.yml
+      # - template: .ci/publish-build-cache.yml
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish MacOS executable'
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: macExe
 
-- job: Windows
-  timeoutInMinutes: 0
-  pool:
-    vmImage: 'vs2017-win2016'
+  - job: Windows
+    timeoutInMinutes: 0
+    pool:
+      vmImage: 'vs2017-win2016'
 
-  variables:
-    ESY__CACHE_INSTALL_PATH: C:\Users\VssAdministrator\.esy\3_\i
-    ESY__CACHE_SOURCE_TARBALL_PATH: C:\Users\VssAdministrator\.esy\source\i
+    variables:
+      ESY__CACHE_INSTALL_PATH: C:\Users\VssAdministrator\.esy\3_\i
+      ESY__CACHE_SOURCE_TARBALL_PATH: C:\Users\VssAdministrator\.esy\source\i
 
-  steps:
-  - template: .ci/restore-build-cache.yml
-  - template: .ci/esy-build-steps.yml
-  - template: .ci/publish-build-cache.yml
+    steps:
+      - template: .ci/restore-build-cache.yml
+      - template: .ci/esy-build-steps.yml
+      - template: .ci/publish-build-cache.yml
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Windows executable'
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: windowsExe
 
-- job: Release
-  timeoutInMinutes: 0
-  displayName: Release
-  dependsOn:
+  - job: Release
+    timeoutInMinutes: 0
+    displayName: Release
+    dependsOn:
       - Linux
       - MacOS
       - Windows
-  condition: succeeded()
-  pool:
-     vmImage: ubuntu-16.04
-  steps:
-    - task: PublishBuildArtifacts@1
-      displayName: 'Release Package'
-      inputs:
-          PathtoPublish: '.'
-          ArtifactName: npm-package
+    condition: succeeded()
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - task: DownloadBuildArtifact@0
+        displayName: 'Download Linux exectable'
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'linuxExe'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: DownloadBuildArtifact@0
+        displayName: 'Download Mac exectable'
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'macExe'
+          downloadPath: '$(0ystem.ArtifactsDirectory)'
+
+      - task: DownloadBuildArtifact@0
+        displayName: 'Download Windows exectable'
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'windowsExe'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: GitHubRelease@1
+        displayName: 'Release Package'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/head/master'))
+        inputs:
+          gitHubConnection: 'klcantrell'
+          repositoryName: 'klcantrell/hello-reason-native'
+          title: 'Hello Reason Native Release'
+          addChangeLog: false
+          assets: |
+            $(System.ArtifactsDirectory)\linuxExe\*
+            $(System.ArtifactsDirectory)\macExe\*
+            $(System.ArtifactsDirectory)\windowsExe\*.exe
