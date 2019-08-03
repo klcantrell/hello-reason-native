@@ -6,12 +6,12 @@ steps:
       versionSpec: '8.9'
   - script: npm install -g esy@next pesy@next
     displayName: 'npm install -g esy@next pesy@next'
-  - script: pesy
-    displayName: 'pesy'
+  - script: esy install
+    displayName: 'esy install'
   - script: esy pesy
     displayName: 'esy pesy'
-  - script: esy
-    displayName: 'esy'
+  - script: esy build
+    displayName: 'esy build'
   - script: esy test
     displayName: 'esy test'
   - script: esy x HelloReasonNativeApp.exe
