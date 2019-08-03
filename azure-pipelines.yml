@@ -21,7 +21,7 @@ jobs:
       # - template: .ci/publish-build-cache.yml
       - script: 'npm pack'
         displayName: 'npm pack'
-      - script: 'cp ./src/_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
+      - script: 'cp ./_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
         displayName: 'copy tgz to "Artifacts Staging Directory"'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Linux executable'
@@ -45,7 +45,7 @@ jobs:
       # - template: .ci/publish-build-cache.yml
       - script: 'npm pack'
         displayName: 'npm pack'
-      - script: 'cp ./src/_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
+      - script: 'cp ./_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
         displayName: 'copy tgz to "Artifacts Staging Directory"'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish MacOS executable'
@@ -68,7 +68,7 @@ jobs:
       - template: .ci/publish-build-cache.yml
       - powershell: 'npm pack'
         displayName: 'npm pack'
-      - powershell: 'cp ./src/_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
+      - powershell: 'cp ./_release/hello-reason-native-0.0.0.tgz $(Build.ArtifactStagingDirectory)'
         displayName: 'copy tgz to "Artifacts Staging Directory"'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Windows executable'
