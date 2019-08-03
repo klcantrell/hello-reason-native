@@ -2,8 +2,6 @@
 
 ### Testing Reason native workflow with esy and pesy
 
-[![CircleCI](https://circleci.com/gh/yourgithubhandle/hello-reason-native/tree/master.svg?style=svg)](https://circleci.com/gh/yourgithubhandle/hello-reason-native/tree/master)
-
 **Contains the following libraries and executables:**
 
 ```
