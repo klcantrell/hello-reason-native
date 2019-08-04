@@ -1,6 +1,6 @@
 {
   "name": "hello-reason-native",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "My Project",
   "esy": {
     "build": "dune build -p #{self.name}",
